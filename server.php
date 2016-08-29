@@ -616,12 +616,24 @@
 			$conexao->close();
 			return json_encode($dados);
 		}
+		function select($condicoes) {
+			require_once("conectar_mysql.php");
+			if ($condicoes != NULL)
+				$condicoes = "WHERE " . $condicoes;
+			$query = $conexao->query("SELECT * FROM tipo_lixo_has_ponto $condicoes");
+			$dados = array();
+			while($row = mysqli_fetch_assoc($query))
+			    $dados[] = $row;
+			$conexao->close();
+			return json_encode($dados);
+		}
 	}
 	// Registro dos métodos da classe tipo_lixo_has_ponto //
 	$server->register('tipo_lixo_has_ponto.insert', array('tipo_lixo_id' => 'xsd:integer','ponto_id' => 'xsd:integer'), array('return' => 'xsd:integer'),$namespace,false,'rpc','encoded','Insere um registro na tabela tipo_lixo_has_ponto (retorna o id do registro inserido).');
 	$server->register('tipo_lixo_has_ponto.delete', array('id' => 'xsd:integer'), array('return' => 'xsd:boolean'),$namespace,false,'rpc','encoded','Deleta um registro da tabela tipo_lixo_has_ponto.');
 	$server->register('tipo_lixo_has_ponto.select_by_id', array('id' => 'xsd:integer'), array('return' => 'xsd:string'),$namespace,false,'rpc','encoded','Pesquisa um registro da tabela tipo_lixo_has_ponto por id (retorna json).');
 	$server->register('tipo_lixo_has_ponto.select_by_ponto', array('ponto_id' => 'xsd:integer'), array('return' => 'xsd:string'),$namespace,false,'rpc','encoded','Pesquisa um registro da tabela tipo_lixo_has_ponto por empresa_id (retorna json).');
+	$server->register('tipo_lixo_has_ponto.select', array('condicoes' => 'xsd:string'), array('return' => 'xsd:string'),$namespace,false,'rpc','encoded','Pesquisa registros da tipo_lixo_has_ponto ponto com condições definidas ou indefinidas (retorna json).');
 
 	// Classe da tabela notificacao //
 	class notificacao {
